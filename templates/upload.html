@@ -1,24 +1,105 @@
 <!doctype html>
-<title>Python Flask Multiple Files Upload Example</title>
-<h2>Select file(s) to upload</h2>
-<p>
-	{% with messages = get_flashed_messages() %}
-	  {% if messages %}
-		<ul class=flashes>
-		{% for message in messages %}
-		  <li>{{ message }}</li>
-		{% endfor %}
-		</ul>
-	  {% endif %}
-	{% endwith %}
-</p>
-<form method="post" action="/" enctype="multipart/form-data">
-    <dl>
-		<p>
-			<input type="file" name="files[]" multiple="true" autocomplete="off" required>
-		</p>
-    </dl>
-    <p>
-		<input type="submit" value="Submit">
-	</p>
-</form>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ITIVA Files</title>
+
+    <!-- Bootstrap CSS -->
+    <!-- Link to your custom Bootstrap theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
+	<style>
+		.nav-link {
+			color: azure !important;
+		}
+	</style>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style01.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-primary bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+				<img src="{{ url_for('static', filename='hapaglogo.png') }}" alt="ITIVA Files Logo" height="30" width: '290px'>
+			</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"><span class="sr-only"></span></a>
+                    </li>
+                    <!-- Add more navigation items here -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+	<!-- Carousel -->
+	
+	<div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel" style="max-height: 300px;">
+		<div class="carousel-inner">
+			<div class="carousel-item">
+				<img src="{{ url_for('static', filename='hlag02.jpg') }}" class="d-block w-100" alt="Image 2">
+			</div>
+		</div>
+	</div>
+	
+
+	<div class="container mt-4">
+		<div class="row">
+			<!-- Column 1 (Inverted) -->
+			<div class="col-md-6" style="height: 50vh;">
+				<div class="card">
+					<div class="card-header">
+						Upload Requirements
+					</div>
+					<div class="card-body" style="height: 100%;">
+						<div class="row">
+							<div class="col-8">
+								<div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" class="scrollspy-example" tabindex="0">
+									<h4 id="list-item-1">Item 1</h4>
+									<p>This is some placeholder content for the scrollspy page. Note that as you scroll down the page, the appropriate navigation link is highlighted. It's repeated throughout the component example. We keep adding some more example copy here to emphasize the scrolling and highlighting.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<!-- Column 2 (Inverted) -->
+			<div class="col-md-6" style="height: 50vh;">
+				<div class="card">
+					<div class="card-body">
+						<h2 class="mb-3">Hapag-Lloyd México</h2>
+						<h2 class="mb-4">ITIVA Files</h2>
+						<p>
+							{% with messages = get_flashed_messages() %}
+							  {% if messages %}
+								<ul class="flashes">
+								{% for message in messages %}
+								  <li>{{ message }}</li>
+								{% endfor %}
+								</ul>
+							  {% endif %}
+							{% endwith %}
+						</p>
+						<form method="post" action="/" enctype="multipart/form-data">
+							<div class="mb-3">
+								<label for="files" class="form-label">Select Files</label>
+								<input type="file" class="form-control" id="files" name="files[]" multiple="true" autocomplete="off" required>
+							</div>
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+    <!-- Bootstrap JS (Place at the end of the body) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
