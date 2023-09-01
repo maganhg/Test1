@@ -1,30 +1,23 @@
 import os
 from flask import Flask, flash, request, redirect, render_template
 from werkzeug.utils import secure_filename
-from flask_bootstrap import Bootstrap5
+from flask_bootstrap import Bootstrap
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
 app = Flask(__name__)
-bootstrap = Bootstrap5(app)
+bootstrap = Bootstrap(app)
 
 app.secret_key = "secret key"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-path = os.getcwd()
-UPLOAD_FOLDER = os.path.join(path, 'uploads')
-
-if not os.path.isdir(UPLOAD_FOLDER):
-    os.mkdir(UPLOAD_FOLDER)
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 ALLOWED_EXTENSIONS = set(['pdf', 'xml'])
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-def has_matching_xml(pdf_filename):
-    xml_filename = pdf_filename.rsplit('.', 1)[0] + '.xml'
-    return os.path.exists(os.path.join(app.config['UPLOAD_FOLDER'], xml_filename))
 
 @app.route('/')
 def upload_form():
@@ -43,9 +36,9 @@ def upload_file():
                 base_filename, extension = os.path.splitext(filename)
 
                 if extension == '.pdf':
-                    pdf_files[base_filename] = filename
+                    pdf_files[base_filename] = file  # Guarda el archivo en lugar del nombre de archivo
                 elif extension == '.xml':
-                    xml_files[base_filename] = filename
+                    xml_files[base_filename] = file  # Guarda el archivo en lugar del nombre de archivo
 
         # Check if there's a matching XML file for each PDF file
         if len(pdf_files) != len(xml_files):
@@ -63,24 +56,55 @@ def upload_file():
                 flash(f'No matching PDF file found for {xml_base}.xml')
                 return redirect(request.url)
 
-        # Check for filename length
-        for filename in pdf_files.values():
-            if len(filename) > 34:
-                flash('Filename too long (max 34 characters)')
-                return redirect(request.url)
+        # Check for filename length (if needed)
+        # ...
 
-        for filename in xml_files.values():
-            if len(filename) > 34:
-                flash('Filename too long (max 34 characters)')
-                return redirect(request.url)
+        # Send files by email
+        send_files_by_email(pdf_files, xml_files)
 
-        # Files meet all requirements, save them
-        for file in request.files.getlist('files[]'):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        flash('File(s) successfully uploaded')
+        flash('File(s) successfully sent via email')
         return redirect('/')
+
+def send_files_by_email(pdf_files, xml_files):
+    # Email configuration
+    EMAIL_ADDRESS = "---"  
+    EMAIL_PASSWORD = "---"  
+    EMAIL_TO = "---"  
+
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_ADDRESS
+    msg['To'] = EMAIL_TO
+    msg['Subject'] = 'Archivos Adjuntos'
+
+    # Cuerpo del correo
+    body = 'Archivos adjuntos desde la aplicación Flask:'
+    msg.attach(MIMEText(body, 'plain'))
+
+    # Adjunta los archivos a enviar
+    for pdf_base, pdf_file in pdf_files.items():
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(pdf_file.read())  # Lee el contenido del archivo
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f"attachment; filename= {pdf_base}.pdf")  # Cambia el nombre del archivo si es necesario
+        msg.attach(part)
+
+    for xml_base, xml_file in xml_files.items():
+        part = MIMEBase('application', 'octet-stream')
+        part.set_payload(xml_file.read())  # Lee el contenido del archivo
+        encoders.encode_base64(part)
+        part.add_header('Content-Disposition', f"attachment; filename= {xml_base}.xml")  # Cambia el nombre del archivo si es necesario
+        msg.attach(part)
+
+    # Establece la conexión al servidor SMTP y envía el correo
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        text = msg.as_string()
+        server.sendmail(EMAIL_ADDRESS, EMAIL_TO, text)
+        server.quit()
+    except Exception as e:
+        flash(f'Error sending email: {str(e)}')
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True, threaded=True)
