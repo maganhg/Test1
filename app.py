@@ -17,7 +17,32 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 ALLOWED_EXTENSIONS = set(['pdf', 'xml'])
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    valid = (
+        '.' in filename
+        and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        and len(filename) <= 34
+    )
+    if not valid:
+        flash(f'Invalid filename: {filename}')
+    return valid
+
+def check_string_length(files):
+    max_string_length = 34
+    for base_filename, file in files.items():
+        content = file.read().decode('utf-8', errors='ignore')
+        num_strings = len(content.split('\n'))
+        if num_strings > max_string_length:
+            return f"File {base_filename} has more than {max_string_length} strings."
+
+    return None  # All files are within the allowed string limit
+
+def check_total_file_count(pdf_files, xml_files):
+    max_total_files = 50
+    total_files = len(pdf_files) + len(xml_files)
+    if total_files > max_total_files:
+        return f"Total files ({total_files}) exceed the limit of {max_total_files}."
+
+    return None  # Total files are within the allowed limit
 
 @app.route('/')
 def upload_form():
@@ -28,17 +53,27 @@ def upload_file():
     if request.method == 'POST':
         pdf_files = {}
         xml_files = {}
+        invalid_filenames = []
 
         for file in request.files.getlist('files[]'):
-            if file and allowed_file(file.filename):
+            if file:
                 filename = secure_filename(file.filename)
+
+                if len(filename) > 34:
+                    invalid_filenames.append(filename)
+                    continue
 
                 base_filename, extension = os.path.splitext(filename)
 
                 if extension == '.pdf':
-                    pdf_files[base_filename] = file  # Guarda el archivo en lugar del nombre de archivo
+                    pdf_files[base_filename] = file
                 elif extension == '.xml':
-                    xml_files[base_filename] = file  # Guarda el archivo en lugar del nombre de archivo
+                    xml_files[base_filename] = file
+
+        if invalid_filenames:
+            for invalid_filename in invalid_filenames:
+                flash(f'Invalid filename: {invalid_filename}')
+            return redirect(request.url)
 
         # Check if there's a matching XML file for each PDF file
         if len(pdf_files) != len(xml_files):
@@ -56,20 +91,30 @@ def upload_file():
                 flash(f'No matching PDF file found for {xml_base}.xml')
                 return redirect(request.url)
 
-        # Check for filename length (if needed)
-        # ...
+        # New code to check string length and total file count
+        string_length_error = check_string_length(xml_files)
+        if string_length_error:
+            flash(string_length_error)
+            return redirect(request.url)
 
-        # Send files by email
+        total_file_count_error = check_total_file_count(pdf_files, xml_files)
+        if total_file_count_error:
+            flash(total_file_count_error)
+            return redirect(request.url)
+
+        # Rest of your code to send files by email
         send_files_by_email(pdf_files, xml_files)
 
         flash('File(s) successfully sent via email')
         return redirect('/')
 
+
+
 def send_files_by_email(pdf_files, xml_files):
     # Email configuration
-    EMAIL_ADDRESS = "---"  
-    EMAIL_PASSWORD = "---"  
-    EMAIL_TO = "---"  
+    EMAIL_ADDRESS = "-"  
+    EMAIL_PASSWORD = "-" 
+    EMAIL_TO = "-"
 
     msg = MIMEMultipart()
     msg['From'] = EMAIL_ADDRESS
