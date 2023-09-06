@@ -91,7 +91,7 @@ def upload_file():
                 flash(f'No matching PDF file found for {xml_base}.xml')
                 return redirect(request.url)
 
-        # New code to check string length and total file count
+        # ChatGPT code that currently don't undesteand how it works but... it works
         string_length_error = check_string_length(xml_files)
         if string_length_error:
             flash(string_length_error)
@@ -102,7 +102,7 @@ def upload_file():
             flash(total_file_count_error)
             return redirect(request.url)
 
-        # Rest of your code to send files by email
+        # Email confirmation 
         send_files_by_email(pdf_files, xml_files)
 
         flash('File(s) successfully sent via email')
@@ -112,9 +112,9 @@ def upload_file():
 
 def send_files_by_email(pdf_files, xml_files):
     # Email configuration
-    EMAIL_ADDRESS = "-"  
-    EMAIL_PASSWORD = "-" 
-    EMAIL_TO = "-"
+    EMAIL_ADDRESS = "hapaglloydmexicobot@gmail.com"  
+    EMAIL_PASSWORD = "apdzeotkoypukelj" 
+    EMAIL_TO = "MXITIVA@hlag.com"
 
     msg = MIMEMultipart()
     msg['From'] = EMAIL_ADDRESS
