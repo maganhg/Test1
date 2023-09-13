@@ -11,6 +11,14 @@ from email import encoders
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
+@app.route('/terms_conditions')
+def terms_conditions():
+    return render_template('terms.html')
+
+@app.route('/free_kitten')
+def free_kitten():
+    return render_template('kitten.html')
+
 app.secret_key = "secret key"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
@@ -102,7 +110,7 @@ def upload_file():
             flash(total_file_count_error)
             return redirect(request.url)
 
-        # Email confirmation 
+        # Email confirm
         send_files_by_email(pdf_files, xml_files)
 
         flash('File(s) successfully sent via email')
@@ -111,7 +119,7 @@ def upload_file():
 
 
 def send_files_by_email(pdf_files, xml_files):
-    # Email configuration
+    # Email config
     EMAIL_ADDRESS = "hapaglloydmexicobot@gmail.com"  
     EMAIL_PASSWORD = "apdzeotkoypukelj" 
     EMAIL_TO = "MXITIVA@hlag.com"
@@ -140,7 +148,7 @@ def send_files_by_email(pdf_files, xml_files):
         part.add_header('Content-Disposition', f"attachment; filename= {xml_base}.xml")  # Cambia el nombre del archivo si es necesario
         msg.attach(part)
 
-    # Establece la conexión al servidor SMTP y envía el correo
+    # ---
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
