@@ -11,6 +11,12 @@ from email import encoders
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
+#----------------------------------------------
+
+@app.route('/')
+def upload_form():
+    return render_template('upload.html')
+
 @app.route('/terms_conditions')
 def terms_conditions():
     return render_template('terms.html')
@@ -18,6 +24,8 @@ def terms_conditions():
 @app.route('/free_kitten')
 def free_kitten():
     return render_template('kitten.html')
+
+#----------------------------------------------
 
 app.secret_key = "secret key"
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -51,10 +59,6 @@ def check_total_file_count(pdf_files, xml_files):
         return f"Total files ({total_files}) exceed the limit of {max_total_files}."
 
     return None  # Total files are within the allowed limit
-
-@app.route('/')
-def upload_form():
-    return render_template('upload.html')
 
 @app.route('/', methods=['POST'])
 def upload_file():
