@@ -14,3 +14,9 @@
     object-fit: cover; /* Maintain aspect ratio and cover the container */
     height: auto; /* Auto-adjust the image height to maintain aspect ratio */
 }
+
+@media (max-width: 767px) {
+    #carouselExampleSlidesOnly {
+        margin-bottom: -15px; /* Adjust the value as needed */
+    }
+}
