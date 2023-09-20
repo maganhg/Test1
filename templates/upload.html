@@ -56,59 +56,31 @@
                             <label for="files" class="form-label">Seleccione archivos</label>
                             <input type="file" class="form-control" id="files" name="files[]" multiple="true" autocomplete="off" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Enviar</button>
-                    </form>
+                    
+                        <!-- Create a container div for vertical alignment -->
+                        <div class="d-flex flex-column align-items-center">
+                            <!-- Add the spinner element with the "d-none" class to hide it initially -->
+                            <div class="spinner-border text-primary d-none" role="status" id="uploadSpinner" style="width: 4rem; height: 4rem;">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                    
+                            <!-- Place the button below the spinner -->
+                            <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+                        </div>
+                    </form>                             
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        $(document).ready(function () {
+                            $("form").on("submit", function () {
+                                // Show the spinner when the form is submitted
+                                $("#uploadSpinner").removeClass("d-none");
+                            });
+                        });
+                    </script>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Add Bootstrap Spinner -->
-<div class="d-none" id="loading-spinner">
-    <div class="spinner-border text-primary" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-    <p class="mt-2">Uploading...</p>
-</div>
-
-<!-- Add Bootstrap Alert -->
-<div id="upload-alert" class="alert alert-dismissible fade show d-none" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    <div id="alert-message"></div>
-</div>
-<!-- JavaScript to toggle the spinner and display alert -->
-<script>
-    $(document).ready(function() {
-        $("#upload-form").submit(function(e) {
-            e.preventDefault(); // Prevent the default form submission
-            $("#loading-spinner").removeClass("d-none"); // Show the spinner
-
-            // Use FormData to submit the form data
-            var formData = new FormData($(this)[0]);
-
-            $.ajax({
-                type: "POST",
-                url: "/",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    $("#loading-spinner").addClass("d-none"); // Hide the spinner
-                    $("#upload-alert").removeClass("alert-danger").addClass("alert-success");
-                    $("#alert-message").text(response.message);
-                    $("#upload-alert").removeClass("d-none").alert();
-                },
-                error: function(response) {
-                    $("#loading-spinner").addClass("d-none"); // Hide the spinner
-                    $("#upload-alert").removeClass("alert-success").addClass("alert-danger");
-                    $("#alert-message").text(response.responseJSON.message);
-                    $("#upload-alert").removeClass("d-none").alert();
-                }
-            });
-        });
-    });
-</script>
 
 {% endblock %}
