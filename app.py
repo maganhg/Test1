@@ -45,12 +45,17 @@ def allowed_file(filename):
 def check_string_length(files):
     max_string_length = 34
     for base_filename, file in files.items():
+        # Check if the base filename contains only letters and numbers
+        if not base_filename.isalnum():
+            return f"Invalid filename: {base_filename}. Filename should contain only letters and numbers."
+
         content = file.read().decode('utf-8', errors='ignore')
         num_strings = len(content.split('\n'))
-        if num_strings > max_string_length:
-            return f"File {base_filename} has more than {max_string_length} strings."
 
-    return None  # All files are within the allowed string limit
+        if num_strings < 1 or num_strings > max_string_length:
+            return f"File {base_filename} has an invalid number of strings. It should have between 1 and {max_string_length} strings."
+        
+    return None  # File is valid
 
 def check_total_file_count(pdf_files, xml_files):
     max_total_files = 50
