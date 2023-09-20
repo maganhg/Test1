@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Confirm page{% endblock %}
+
+{% block content %}
+
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3 text-center">
+            <h2>Archivos enviados correctamente</h2>
+            <img src="{{ url_for('static', filename='your_image.png') }}" alt="">
+            <br><br>
+            <a href="">Volver al menú principal</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
