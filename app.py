@@ -70,7 +70,7 @@ def check_total_file_count(pdf_files, xml_files):
 
     return None  # Total files are within the allowed limit
 
-@app.route('/', methods=['POST'])
+@app.route('/itiva', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
         pdf_files = {}
