@@ -128,7 +128,7 @@ def upload_file():
         send_files_by_email(pdf_files, xml_files)
 
         flash('File(s) successfully sent via email')
-        return redirect('/')
+        return redirect('/itiva')
 
 
 
