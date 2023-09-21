@@ -54,3 +54,20 @@ footer {
     line-height: 1.5;
 }
 
+/* checkbox */
+#acceptTerms {
+    transform: scale(1.7); 
+    margin-right: 15px; 
+}
+
+
+#acceptTerms:checked + .form-check-label::before {
+    background-color: #e95420; 
+    border-color: #e95420;
+}
+
+
+#acceptTerms + .form-check-label {
+    color: #e95420; 
+    font-weight: bold; 
+}

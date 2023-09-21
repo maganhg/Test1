@@ -13,20 +13,20 @@ bootstrap = Bootstrap(app)
 
 #----------------------------------------------
 
-@app.route('/')
+@app.route('/itiva')
 def upload_form():
     return render_template('upload.html')
 
-@app.route('/terms_conditions')
+@app.route('/itiva/terms_conditions')
 def terms_conditions():
     return render_template('terms.html')
 
-@app.route('/free_kitten')
+@app.route('/itiva/free_kitten')
 def free_kitten():
     return render_template('kitten.html')
 
 #---------------------
-@app.route('/confirm')
+@app.route('/itiva/confirm')
 def confirmation():
     return render_template('confirm.html')
 
@@ -70,7 +70,7 @@ def check_total_file_count(pdf_files, xml_files):
 
     return None  # Total files are within the allowed limit
 
-@app.route('/', methods=['POST'])
+@app.route('/itiva', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
         pdf_files = {}
@@ -128,7 +128,7 @@ def upload_file():
         send_files_by_email(pdf_files, xml_files)
 
         flash('File(s) successfully sent via email')
-        return redirect('/')
+        return redirect('/itiva')
 
 
 

@@ -51,10 +51,16 @@
                             {% endif %}
                         {% endwith %}
                     </p>
-                    <form method="post" action="/" enctype="multipart/form-data">
+                    <form method="post" action="/itiva" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="files" class="form-label">Seleccione archivos</label>
                             <input type="file" class="form-control" id="files" name="files[]" multiple="true" autocomplete="off" required>
+                        </div>
+                        
+                        <!-- Add the checkbox for accepting terms -->
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="acceptTerms" name="accept_terms" required>
+                            <label class="form-check-label" for="acceptTerms">Acepto los términos y condiciones</label>
                         </div>
                     
                         <!-- Create a container div for vertical alignment -->
@@ -63,11 +69,19 @@
                             <div class="spinner-border text-primary d-none" role="status" id="uploadSpinner" style="width: 4rem; height: 4rem;">
                                 <span class="visually-hidden">Cargando...</span>
                             </div>
-                    
+                        
                             <!-- Place the button below the spinner -->
-                            <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+                            <button type="submit" class="btn btn-primary mt-2" id="submitButton" disabled>Enviar</button>
                         </div>
-                    </form>                             
+                    </form>
+                    
+                    <script>
+                        // Add an event listener to the checkbox to enable/disable the submit button
+                        document.getElementById("acceptTerms").addEventListener("change", function() {
+                            document.getElementById("submitButton").disabled = !this.checked;
+                        });
+                    </script>
+                                                 
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script>
                         $(document).ready(function () {
