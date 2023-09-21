@@ -39,28 +39,23 @@ ALLOWED_EXTENSIONS = set(['pdf', 'xml'])
 
 def allowed_file(filename):
     valid = (
-        '.' in filename
+        '.' in str(filename)
         and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-        and len(filename) <= 34
+        and len(str(filename)) <= 34
     )
     if not valid:
         flash(f'Invalid filename: {filename}')
+
     return valid
 
 def check_string_length(files):
     max_string_length = 34
     for base_filename, file in files.items():
-        # Check if the base filename length is within the desired range
-        if len(base_filename) < 1 or len(base_filename) > max_string_length:
-            return f"Invalid filename: {base_filename}. Filename length should be between 1 and {max_string_length} characters."
-
-        content = file.read().decode('utf-8', errors='ignore')
-        num_strings = len(content.split('\n'))
-
-        if num_strings < 1 or num_strings > max_string_length:
-            return f"File {base_filename} has an invalid number of strings. It should have between 1 and {max_string_length} strings."
-
-    return None  # Return None if all checks pass
+        
+        if len(str(base_filename)) < 1 or len(str(base_filename)) > max_string_length:
+            return f"Invalid filename: {base_filename}."
+        
+    return None  
 
 def check_total_file_count(pdf_files, xml_files):
     max_total_files = 50
