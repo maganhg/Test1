@@ -13,20 +13,20 @@ bootstrap = Bootstrap(app)
 
 #----------------------------------------------
 
-@app.route('/')
+@app.route('/itiva')
 def upload_form():
     return render_template('upload.html')
 
-@app.route('/terms_conditions')
+@app.route('/itiva/terms_conditions')
 def terms_conditions():
     return render_template('terms.html')
 
-@app.route('/free_kitten')
+@app.route('/itiva/free_kitten')
 def free_kitten():
     return render_template('kitten.html')
 
 #---------------------
-@app.route('/confirm')
+@app.route('/itiva/confirm')
 def confirmation():
     return render_template('confirm.html')
 
