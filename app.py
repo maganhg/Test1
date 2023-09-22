@@ -14,6 +14,8 @@ bootstrap = Bootstrap(app)
 #-----------------------------------------------------------------
 #Main templates 
 #---------------------
+
+
 @app.route('/itiva')
 def upload_form():
     return render_template('upload.html')
@@ -30,6 +32,8 @@ def free_kitten():
 #-----------------------------------------------------------------
 #404 Errors 
 #---------------------
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     if request.path.startswith('/itiva/'):
@@ -41,6 +45,8 @@ def page_not_found(e):
 #-----------------------------------------------------------------
 #Test templates 
 #---------------------
+
+
 @app.route('/itiva/login')
 def login():
     return render_template('login.html')
