@@ -13,6 +13,8 @@ bootstrap = Bootstrap(app)
 
 #----------------------------------------------
 
+#Main templates 
+#---------------------
 @app.route('/itiva')
 def upload_form():
     return render_template('upload.html')
@@ -25,6 +27,18 @@ def terms_conditions():
 def free_kitten():
     return render_template('kitten.html')
 
+#404 Errors 
+#---------------------
+@app.errorhandler(404)
+def page_not_found(e):
+    if request.path.startswith('/itiva/'):
+        return render_template('404.html'), 404
+    else:
+        # Optionally, you can return a different response for other 404 errors.
+        # For example, you could just return a simple 404 message.
+        return "Page not found", 404
+
+#Test templates 
 #---------------------
 @app.route('/itiva/login')
 def login():
