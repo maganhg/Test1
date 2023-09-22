@@ -94,51 +94,24 @@
                 </div>
             </div>
         </div>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message == 'Archivo(s) inválido, Revisar Requerimientos Generales' %}
+                        <div class="alert alert-warning alert-dismissible fade show" role="alert" style="text-align: center">
+                            <strong>Archivo(s) inválido</strong>, Revisar Requerimientos Generales.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% elif message == 'Archivos procesados correctamente' %}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="text-align: center">
+                            <strong>Archivos procesados correctamente</strong> We hope u have a lovely day.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
     </div>
-</div>
-<div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 11">
-    <script>
-        // Function to display Bootstrap toasts
-        function showToast(message, type) {
-            var toastContainer = $("#toast-container");
-            var toastHtml = `<div class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="9000" data-bs-autohide="true">
-                                <div class="toast-header bg-${type}">
-                                    <strong class="me-auto text-white">Notification</strong>
-                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                                </div>
-                                <div class="toast-body">
-                                    ${message}
-                                </div>
-                            </div>`;
-            toastContainer.append(toastHtml);
-    
-            // Show the toast
-            var toast = toastContainer.find('.toast:last');
-            var bsToast = new bootstrap.Toast(toast);
-            bsToast.show();
-            
-            // Remove the toast after it's closed
-            toast.on('hidden.bs.toast', function () {
-                $(this).remove();
-            });
-        }
-    
-        $(document).ready(function () {
-            $("form").on("submit", function () {
-                // Show the spinner when the form is submitted
-                $("#uploadSpinner").removeClass("d-none");
-            });
-            
-            // Display flashed messages as toasts
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        showToast("{{ message }}", "primary"); // You can customize the toast type here
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        });
-    </script> 
 </div>
 
 {% endblock %}

@@ -26,9 +26,9 @@ def free_kitten():
     return render_template('kitten.html')
 
 #---------------------
-@app.route('/itiva/confirm')
-def confirmation():
-    return render_template('confirm.html')
+@app.route('/itiva/login')
+def login():
+    return render_template('login.html')
 
 #----------------------------------------------
 
@@ -44,7 +44,7 @@ def allowed_file(filename):
         and len(str(filename)) <= 34
     )
     if not valid:
-        flash(f'Invalid filename: {filename}')
+        flash(f'Archivo(s) inválido, Revisar Requerimientos Generales')
 
     return valid
 
@@ -53,7 +53,7 @@ def check_string_length(files):
     for base_filename, file in files.items():
         
         if len(str(base_filename)) < 1 or len(str(base_filename)) > max_string_length:
-            return f"Invalid filename: {base_filename}."
+            return f"Archivo(s) inválido, Revisar Requerimientos Generales"
         
     return None  
 
@@ -61,7 +61,7 @@ def check_total_file_count(pdf_files, xml_files):
     max_total_files = 50
     total_files = len(pdf_files) + len(xml_files)
     if total_files > max_total_files:
-        return f"Total files ({total_files}) exceed the limit of {max_total_files}."
+        return f"Archivo(s) inválido, Revisar Requerimientos Generales"
 
     return None  # Total files are within the allowed limit
 
@@ -89,23 +89,23 @@ def upload_file():
 
         if invalid_filenames:
             for invalid_filename in invalid_filenames:
-                flash(f'Invalid filename: {invalid_filename}')
+                flash(f"Archivo(s) inválido, Revisar Requerimientos Generales")
             return redirect(request.url)
 
         # Check if there's a matching XML file for each PDF file
         if len(pdf_files) != len(xml_files):
-            flash('Unequal number of PDF and XML files')
+            flash(f"Archivo(s) inválido, Revisar Requerimientos Generales")
             return redirect(request.url)
 
         # Check for matching PDF and XML files
         for pdf_base in pdf_files:
             if pdf_base not in xml_files:
-                flash(f'No matching XML file found for {pdf_base}.pdf')
+                flash(f"Archivo(s) inválido, Revisar Requerimientos Generales")
                 return redirect(request.url)
 
         for xml_base in xml_files:
             if xml_base not in pdf_files:
-                flash(f'No matching PDF file found for {xml_base}.xml')
+                flash(f"Archivo(s) inválido, Revisar Requerimientos Generales")
                 return redirect(request.url)
 
         # ChatGPT code that currently don't undesteand how it works but... it works
@@ -122,7 +122,7 @@ def upload_file():
         # Email confirm
         send_files_by_email(pdf_files, xml_files)
 
-        flash('File(s) successfully sent via email')
+        flash('Archivos procesados correctamente')
         return redirect('/itiva')
 
 
