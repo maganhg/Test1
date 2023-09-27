@@ -8,6 +8,9 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
+import zipfile
+
+
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 
@@ -80,7 +83,7 @@ def check_string_length(files):
     return None  
 
 def check_total_file_count(pdf_files, xml_files):
-    max_total_files = 50
+    max_total_files = 78
     total_files = len(pdf_files) + len(xml_files)
     if total_files > max_total_files:
         return f"Archivo(s) inválido, Revisar Requerimientos Generales"
@@ -164,31 +167,51 @@ def send_files_by_email(pdf_files, xml_files):
     body = 'Archivos adjuntos desde la aplicación Flask:'
     msg.attach(MIMEText(body, 'plain'))
 
-    # Adjunta los archivos a enviar
-    for pdf_base, pdf_file in pdf_files.items():
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload(pdf_file.read())  # Lee el contenido del archivo
-        encoders.encode_base64(part)
-        part.add_header('Content-Disposition', f"attachment; filename= {pdf_base}.pdf")  # Cambia el nombre del archivo si es necesario
-        msg.attach(part)
+    # Create a temporary directory to store the files
+    temp_dir = '/tmp/temp_files'
+    os.makedirs(temp_dir, exist_ok=True)
 
-    for xml_base, xml_file in xml_files.items():
-        part = MIMEBase('application', 'octet-stream')
-        part.set_payload(xml_file.read())  # Lee el contenido del archivo
-        encoders.encode_base64(part)
-        part.add_header('Content-Disposition', f"attachment; filename= {xml_base}.xml")  # Cambia el nombre del archivo si es necesario
-        msg.attach(part)
-
-    # ---
     try:
+        # Create a unique zip file name
+        zip_filename = 'files.zip'
+        zip_filepath = os.path.join(temp_dir, zip_filename)
+
+        # Create a zip archive containing the PDF and XML files
+        with zipfile.ZipFile(zip_filepath, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for pdf_base, pdf_file in pdf_files.items():
+                pdf_file.save(os.path.join(temp_dir, f"{pdf_base}.pdf"))
+                xml_file = xml_files[pdf_base]
+                xml_file.save(os.path.join(temp_dir, f"{pdf_base}.xml"))
+                zipf.write(os.path.join(temp_dir, f"{pdf_base}.pdf"), f"{pdf_base}.pdf")
+                zipf.write(os.path.join(temp_dir, f"{pdf_base}.xml"), f"{pdf_base}.xml")
+
+        # Attach the zip file to the email
+        with open(zip_filepath, 'rb') as zip_file:
+            part = MIMEBase('application', 'zip')
+            part.set_payload(zip_file.read())
+            encoders.encode_base64(part)
+            part.add_header('Content-Disposition', f"attachment; filename= {zip_filename}")
+            msg.attach(part)
+
+        # Send the email
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         text = msg.as_string()
         server.sendmail(EMAIL_ADDRESS, EMAIL_TO, text)
         server.quit()
+
     except Exception as e:
         flash(f'Error sending email: {str(e)}')
+
+    finally:
+        # Delete the temporary directory and files after sending
+        for filename in os.listdir(temp_dir):
+            file_path = os.path.join(temp_dir, filename)
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        os.rmdir(temp_dir)
+   
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True, threaded=True)

@@ -71,3 +71,16 @@ footer {
     color: #e95420; 
     font-weight: bold; 
 }
+
+/* TEST ENVIORMENT SIGNAL */
+
+/* Custom styles for the header */
+.site-header {
+    background-color: yellow; /* Set the background color to yellow */
+    padding: 20px 0; /* Add padding to increase the header's height */
+}
+
+.custom-header-text {
+    font-size: 24px; /* Increase the font size */
+    font-weight: bold; /* Make the text bold */
+}
