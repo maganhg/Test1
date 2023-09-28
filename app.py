@@ -83,7 +83,7 @@ def check_string_length(files):
     return None  
 
 def check_total_file_count(pdf_files, xml_files):
-    max_total_files = 78
+    max_total_files = 100
     total_files = len(pdf_files) + len(xml_files)
     if total_files > max_total_files:
         return f"Archivo(s) inválido, Revisar Requerimientos Generales"
@@ -215,3 +215,4 @@ def send_files_by_email(pdf_files, xml_files):
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True, threaded=True)
+
