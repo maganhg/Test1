@@ -146,7 +146,7 @@ def upload_file():
 def send_files_by_email(pdf_files, xml_files):
     # Email config
     EMAIL_ADDRESS = "hapaglloydmexicobot@gmail.com"  
-    EMAIL_PASSWORD = "apdzeotkoypukelj" 
+    EMAIL_PASSWORD = "rcetqtacqtozadtd" #"apdzeotkoypukelj" 
     EMAIL_TO = "MXITIVA@hlag.com"
 
     msg = MIMEMultipart()
