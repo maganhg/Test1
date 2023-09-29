@@ -178,12 +178,17 @@ def send_files_by_email(pdf_files, xml_files):
 
         # Create a zip archive containing the PDF and XML files
         with zipfile.ZipFile(zip_filepath, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            for pdf_base, pdf_file in pdf_files.items():
-                pdf_file.save(os.path.join(temp_dir, f"{pdf_base}.pdf"))
-                xml_file = xml_files[pdf_base]
-                xml_file.save(os.path.join(temp_dir, f"{pdf_base}.xml"))
-                zipf.write(os.path.join(temp_dir, f"{pdf_base}.pdf"), f"{pdf_base}.pdf")
-                zipf.write(os.path.join(temp_dir, f"{pdf_base}.xml"), f"{pdf_base}.xml")
+            for pdf_file_path, xml_file_path in zip(pdf_files, xml_files):
+                pdf_base = os.path.basename(pdf_file_path)
+                xml_base = os.path.basename(xml_file_path)
+
+                pdf_file = open(pdf_file_path, 'rb')
+                xml_file = open(xml_file_path, 'rb')
+
+                pdf_file.save(os.path.join(temp_dir, pdf_base))
+                xml_file.save(os.path.join(temp_dir, xml_base))
+                zipf.write(os.path.join(temp_dir, pdf_base), pdf_base)
+                zipf.write(os.path.join(temp_dir, xml_base), xml_base)
 
         # Attach the zip file to the email
         with open(zip_filepath, 'rb') as zip_file:
@@ -212,7 +217,4 @@ def send_files_by_email(pdf_files, xml_files):
                 os.unlink(file_path)
         os.rmdir(temp_dir)
    
-
-if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000, debug=True, threaded=True)
 
